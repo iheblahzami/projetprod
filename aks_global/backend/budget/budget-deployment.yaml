@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budget-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: budget
+  template:
+    metadata:
+      labels:
+        app: budget
+    spec:
+      containers:
+        - name: budget
+          image: budgetacr.azurecr.io/budgetprod:v3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          env:
+            - name: DB_HOST
+              value: "mysql-service"  # Hostname of the MySQL service
+            - name: DB_PORT
+              value: "3306"  # Port number of the MySQL service
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-username  # Username fetched from Kubernetes secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-password  # Password fetched from Kubernetes secret
+            - name: DB_NAME
+              value: "bdcommunapp"  # Name of the MySQL database
+      imagePullSecrets:
+        - name: acr-secret
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: budget-service
+spec:
+  selector:
+    app: budget
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: LoadBalancer

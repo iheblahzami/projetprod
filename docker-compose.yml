@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  budget_ms:
+    image: budgetlocal
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./budget_ms/budgetapp:/app
+    depends_on:
+      - mysql
+    environment:
+      - DATABASE_URL=mysql://root:@mysql:3306/bdcommunapp?
+  
+  transaction_ms:
+    image: transactionlocal
+    ports:
+      - "8001:8000"  # Map a different external port to avoid conflicts
+    volumes:
+      - ./transaction_ms/transactionapp:/app  # Use a different volume for each service if needed
+    depends_on:
+      - mysql
+    environment:
+      - DATABASE_URL=mysql://root:@mysql:3306/bdcommunapp?
+
+  user_ms:
+    image: userlocal
+    ports:
+      - "8005:8000"  # Map another different external port
+    volumes:
+      - ./user_ms/user:/app  # Use a different volume for each service if needed
+    depends_on:
+      - mysql
+    environment:
+      - DATABASE_URL=mysql://root:@mysql:3306/bdcommunapp?
+
+  angular:
+    image: angularlocal
+    ports:
+      - "4200:4200"
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: bdcommunapp

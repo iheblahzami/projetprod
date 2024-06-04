@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/budget_ms/budgetapp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/front_ms/front-budget22-master" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/user_ms/user" vcs="Git" />
+  </component>
+</project>
